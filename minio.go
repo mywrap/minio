@@ -43,7 +43,7 @@ func NewClient(cfg Config) (*Client, error) {
 			return nil, fmt.Errorf("create bucket: %v", err2)
 		}
 	} else {
-		log.Printf("Created MinIO bucket %v\n", cfg.BucketName)
+		log.Printf("created MinIO bucket %v\n", cfg.BucketName)
 	}
 
 	policy := fmt.Sprintf(`{
@@ -69,7 +69,7 @@ func NewClient(cfg Config) (*Client, error) {
 	if err != nil {
 		return nil, fmt.Errorf("test upload: %v", err)
 	}
-	log.Infof("successfully inited Client to %v", endpoint)
+	log.Printf("successfully inited Client to %v", endpoint)
 	return myClient, nil
 }
 
