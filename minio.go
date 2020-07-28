@@ -79,6 +79,9 @@ func NewClient(cfg Config) (*Client, error) {
 }
 
 // uploadWithCtx uploads input file to the client's predefined bucket.
+// if the file uploaded successfully, people can read it at URL:
+// 		{host}:{port}/{bucketName}/{fileName}
+//		ex: http://127.0.0.1:9000/bucket0/DDCat.jpg
 // :param contentType: default is "text/plain;charset=UTF-8", detail:
 // 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
 func (c Client) UploadWithCtx(ctx context.Context, contentType string,
