@@ -46,18 +46,23 @@ func NewClient(cfg Config) (*Client, error) {
 		log.Printf("created MinIO bucket %v\n", cfg.BucketName)
 	}
 
+	// https://docs.min.io/docs/golang-client-api-reference#SetBucketPolicy
 	policy := fmt.Sprintf(`{
-	  "Version": "2012-10-17",
-	  "Statement": [
+	"Version": "2012-10-17",
+	"Statement": [
 		{
-		  "Action": "s3:GetObject",
-		  "Effect": "Allow",
-		  "Principal": {"AWS": "*"},
-		  "Resource": ["arn:aws:s3:::%v/*"],
-		  "Sid": "PublicRead"
+			"Action": ["s3:GetObject"],
+			"Effect": "Allow",
+			"Principal": {
+				"AWS": ["*"]
+			},
+			"Resource": [
+				"arn:aws:s3:::%v/*"
+			],
+			"Sid": "PublicReadGetObject"
 		}
-	  ]
-	}`, cfg.BucketName)
+	]
+}`, cfg.BucketName)
 	err = cli.SetBucketPolicy(cfg.BucketName, policy)
 	if err != nil {
 		return nil, fmt.Errorf("set bucket policy: %v", err)
