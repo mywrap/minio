@@ -44,10 +44,8 @@ func NewClient(cfg Config) (*Client, error) {
 		}
 	} else {
 		log.Printf("created MinIO bucket %v\n", cfg.BucketName)
-	}
-
-	// https://docs.min.io/docs/golang-client-api-reference#SetBucketPolicy
-	policy := fmt.Sprintf(`{
+		// https://docs.min.io/docs/golang-client-api-reference#SetBucketPolicy
+		policy := fmt.Sprintf(`{
 	"Version": "2012-10-17",
 	"Statement": [
 		{
@@ -63,9 +61,10 @@ func NewClient(cfg Config) (*Client, error) {
 		}
 	]
 }`, cfg.BucketName)
-	err = cli.SetBucketPolicy(cfg.BucketName, policy)
-	if err != nil {
-		return nil, fmt.Errorf("set bucket policy: %v", err)
+		err = cli.SetBucketPolicy(cfg.BucketName, policy)
+		if err != nil {
+			return nil, fmt.Errorf("set bucket policy: %v", err)
+		}
 	}
 
 	myClient := &Client{client: cli, bucket: cfg.BucketName}

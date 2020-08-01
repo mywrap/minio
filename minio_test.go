@@ -49,6 +49,13 @@ func TestNewClient(t *testing.T) {
 		t.Error(err)
 	}
 
+	// create directory
+	err = client.UploadWithCtx(context.Background(), "",
+		"dir_test/hihi.txt", []byte(time.Now().Format(time.RFC3339)))
+	if err != nil {
+		t.Error(err)
+	}
+
 	// try invalid config
 	invalidConf := Config{}
 	_, err = NewClient(invalidConf)
