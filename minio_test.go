@@ -23,7 +23,7 @@ func TestNewClient(t *testing.T) {
 	// upload a small file
 	ctx, cxl := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cxl()
-	err = client.UploadWithCtx(ctx, "",
+	_, err = client.UploadWithCtx(ctx, "",
 		"TestNewClient", []byte("pussy"))
 	if err != nil {
 		t.Error(err)
@@ -43,14 +43,14 @@ func TestNewClient(t *testing.T) {
 
 	// upload an image
 	img, _ := ioutil.ReadFile("./DDCat_test.jpg")
-	err = client.UploadWithCtx(context.Background(), "image/jpeg",
+	_, err = client.UploadWithCtx(context.Background(), "image/jpeg",
 		"DDCat.jpg", img)
 	if err != nil {
 		t.Error(err)
 	}
 
 	// create directory
-	err = client.UploadWithCtx(context.Background(), "",
+	_, err = client.UploadWithCtx(context.Background(), "",
 		"dir_test/hihi.txt", []byte(time.Now().Format(time.RFC3339)))
 	if err != nil {
 		t.Error(err)
@@ -66,7 +66,7 @@ func TestNewClient(t *testing.T) {
 	// try timeout
 	ctx2, cxl2 := context.WithTimeout(context.Background(), 1*time.Nanosecond)
 	defer cxl2()
-	err = client.UploadWithCtx(ctx2, "", "TestTimeout", bigFile)
+	_, err = client.UploadWithCtx(ctx2, "", "TestTimeout", bigFile)
 	if err == nil {
 		t.Error("expected context deadline exceeded")
 	}

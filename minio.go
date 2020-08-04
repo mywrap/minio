@@ -68,7 +68,7 @@ func NewClient(cfg Config) (*Client, error) {
 	}
 
 	myClient := &Client{client: cli, bucket: cfg.BucketName}
-	err = myClient.UploadWithCtx(ctx, "",
+	_, err = myClient.UploadWithCtx(ctx, "",
 		"PING", []byte(fmt.Sprintf("PING at %v", time.Now())))
 	if err != nil {
 		return nil, fmt.Errorf("test upload: %v", err)
@@ -84,7 +84,7 @@ func NewClient(cfg Config) (*Client, error) {
 // :param contentType: default is "text/plain;charset=UTF-8", detail:
 // 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
 func (c Client) UploadWithCtx(ctx context.Context, contentType string,
-	fileName string, data []byte) error {
+	fileName string, data []byte) (string, error) {
 	objSize := int64(len(data))
 	if contentType == "" {
 		contentType = "text/plain;charset=UTF-8"
@@ -93,12 +93,12 @@ func (c Client) UploadWithCtx(ctx context.Context, contentType string,
 	n, err := c.client.PutObjectWithContext(ctx, c.bucket, fileName,
 		bytes.NewReader(data), objSize, option)
 	if err != nil {
-		return fmt.Errorf("client PutObjectWithContext: %v", err)
+		return "", fmt.Errorf("client PutObjectWithContext: %v", err)
 	}
 	if n != objSize {
-		return fmt.Errorf("return size: expected %v, real %v", objSize, n)
+		return "", fmt.Errorf("size: expected %v, real %v", objSize, n)
 	}
-	return nil
+	return c.GetPath(fileName), nil
 }
 
 // Upload is for testing,
@@ -106,7 +106,12 @@ func (c Client) UploadWithCtx(ctx context.Context, contentType string,
 func (c Client) Upload(fileName string, data []byte) error {
 	ctx, cxl := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cxl()
-	return c.UploadWithCtx(ctx, "", fileName, data)
+	_, err := c.UploadWithCtx(ctx, "", fileName, data)
+	return err
+}
+
+func (c Client) GetPath(fileName string) string {
+	return fmt.Sprintf("/%v/%v", c.bucket, fileName)
 }
 
 // Config can be loaded easily by calling func LoadEnvConfig
