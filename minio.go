@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strconv"
 	"time"
 
 	minio "github.com/minio/minio-go/v6"
@@ -25,7 +26,7 @@ func NewClient(cfg Config) (*Client, error) {
 	}
 
 	endpoint := fmt.Sprintf("%v:%v", cfg.EndpointHost, cfg.EndpointPort)
-	cli, err := minio.New(endpoint, cfg.AccessId, cfg.AccessSecret, false)
+	cli, err := minio.New(endpoint, cfg.AccessId, cfg.AccessSecret, cfg.IsEndpointTLS)
 	if err != nil {
 		return nil, err
 	}
@@ -116,21 +117,24 @@ func (c Client) GetPath(fileName string) string {
 
 // Config can be loaded easily by calling func LoadEnvConfig
 type Config struct {
-	EndpointHost string
-	EndpointPort string
-	AccessId     string
-	AccessSecret string
-	BucketName   string
+	EndpointHost  string
+	EndpointPort  string
+	IsEndpointTLS bool
+	AccessId      string
+	AccessSecret  string
+	BucketName    string
 }
 
 // LoadEnvConfig loads config from environment variables:
 // MINIO_HOST, MINIO_PORT, MINIO_ACCESS_KEY, MINIO_SECRET_KEY, MINIO_BUCKET_NAME
 func LoadEnvConfig() Config {
+	isEndpointTLS, _ := strconv.ParseBool(os.Getenv("MINIO_IS_TLS"))
 	return Config{
-		EndpointHost: os.Getenv("MINIO_HOST"),
-		EndpointPort: os.Getenv("MINIO_PORT"),
-		AccessId:     os.Getenv("MINIO_ACCESS_KEY"),
-		AccessSecret: os.Getenv("MINIO_SECRET_KEY"),
-		BucketName:   os.Getenv("MINIO_BUCKET_NAME"),
+		EndpointHost:  os.Getenv("MINIO_HOST"),
+		EndpointPort:  os.Getenv("MINIO_PORT"),
+		IsEndpointTLS: isEndpointTLS,
+		AccessId:      os.Getenv("MINIO_ACCESS_KEY"),
+		AccessSecret:  os.Getenv("MINIO_SECRET_KEY"),
+		BucketName:    os.Getenv("MINIO_BUCKET_NAME"),
 	}
 }
