@@ -10,7 +10,6 @@ import (
 	"time"
 
 	minio "github.com/minio/minio-go/v6"
-	"github.com/mywrap/log"
 )
 
 // Client connects to a MinIO server, create a predefined bucketName if needed,
@@ -44,7 +43,6 @@ func NewClient(cfg Config) (*Client, error) {
 			return nil, fmt.Errorf("create bucket: %v", err2)
 		}
 	} else {
-		log.Printf("created MinIO bucket %v\n", cfg.BucketName)
 		// https://docs.min.io/docs/golang-client-api-reference#SetBucketPolicy
 		policy := fmt.Sprintf(`{
 	"Version": "2012-10-17",
@@ -74,7 +72,6 @@ func NewClient(cfg Config) (*Client, error) {
 	if err != nil {
 		return nil, fmt.Errorf("test upload: %v", err)
 	}
-	log.Printf("successfully inited Client to %v", endpoint)
 	return myClient, nil
 }
 

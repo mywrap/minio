@@ -71,3 +71,38 @@ func TestNewClient(t *testing.T) {
 		t.Error("expected context deadline exceeded")
 	}
 }
+
+func _TestConfig(t *testing.T) {
+	exampleAllowActionForUser := ` 
+	{
+		"Version": "2012-10-17",
+		"Id": "Policy1537524153313",
+		"Statement": [
+			{
+				"Sid": "Stmt1537524110890",
+				"Effect": "Allow",
+				"Principal": {
+					"AWS": "arn:aws:iam::157907901550:user/writer0"
+				},
+				"Action": [
+					"s3:PutObject",
+					"s3:PutObjectAcl"
+				],
+				"Resource": "arn:aws:s3:::tradex-vn/*"
+			},
+			{
+				"Sid": "1893ac62d8fe4890bac42258b9633c53",
+				"Effect": "Allow",
+				"Principal": {
+					"AWS": "arn:aws:iam::157907901550:user/reader0"
+				},
+				"Action": [
+					"s3:GetObject"
+				],
+				"Resource": "arn:aws:s3:::tradex-vn/*"
+			}
+		]
+	}`
+	// ref: https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_principal.html
+	_ = exampleAllowActionForUser
+}

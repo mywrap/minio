@@ -6,5 +6,5 @@ go vet ./...
 # Run all unittests, include some network tests.
 # Run `go test` in `pkg/core` for only logic tests
 go clean -testcache &&\
-    source env_ignore.sh &&\
+    source env.sh &&\
     go test -v ./... | grep FAIL -B 1 -A 1
